@@ -80,16 +80,14 @@ function activate(context) {
 		const idx = openedFileNames.indexOf(fileName);
 
 		if(idx !== -1) {
-			fs.unlink(fileName, (err) => {
-				if (err) throw err;
-			})
 			openedFileNames.splice(idx, 1);
 		}
 	});
 
 	vscode.workspace.onDidSaveTextDocument(e => {
-		if(openedFileNames.indexOf(e.fileName) !== -1) {
-			const gtautil = spawn('GTAUtil', ['importmeta', '-i', e.fileName]);
+		const fileName = e.fileName.replace('.git', '')
+		if(openedFileNames.indexOf(fileName) !== -1) {
+			const gtautil = spawn('GTAUtil', ['importmeta', '-i', fileName]);
 
 			gtautil.stdout.on('data', data => {
 				console.log(data);
